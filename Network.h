@@ -32,7 +32,7 @@ public:
     Network(unsigned long N, double p, double A, double theta, double gamma, bool b);
     std::vector<Bank> getBanks();
 
-    void simulateShock(int pos, int sourcePos, double shock, bool isInitial);
+    void simulateShock(int pos, double shock, bool isInitial);
 
     double getNetLoss();
 

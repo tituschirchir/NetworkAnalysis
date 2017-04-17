@@ -52,9 +52,10 @@ void Network::initiateNetwork(double A, double theta, double gamma) {
     banks = std::vector<Bank>(N);
     for (int i = 0; i < N; ++i) {
         Bank bank = Bank(prefix + std::to_string(i));
-        bank.interbankBorrowing = accumulate(prunedAdjacencyMatrix[i].begin(), prunedAdjacencyMatrix[i].end(), 0) * e_bk;
+        bank.interbankBorrowing =
+                accumulate(prunedAdjacencyMatrix[i].begin(), prunedAdjacencyMatrix[i].end(), 0) * e_bk;
         bank.interbankAssets = accumulate(inverseAdjacencyMatrix[i].begin(), inverseAdjacencyMatrix[i].end(), 0) * e_bk;
-        double excessAssets = A/N - bank.interbankAssets;
+        double excessAssets = A / N - bank.interbankAssets;
         bank.externalAssets = excessAssets >= 0 ? excessAssets : 0;
         bank.capital = (bank.interbankAssets + bank.externalAssets) * gamma;
         bank.customerDeposits = bank.externalAssets + bank.interbankAssets - bank.capital - bank.interbankBorrowing;
@@ -74,46 +75,36 @@ static double max(const double a, const double b) {
     return a >= b ? a : b;
 }
 
-void Network::simulateShock(int pos, int sourcePos, double shock, bool isInitial) {
+void Network::simulateShock(int pos, double shock, bool isInitial) {
     Bank shockedBank = banks[pos];
-    if(shock>0) {
-        if (shockedBank.defaults) {
-            //Reapply shock to initial
-            banks[sourcePos].defaults = false;
-            failures -= 1;
-            simulateShock(sourcePos, sourcePos, shock, false);
-        } else {
-            if(isInitial)
-                banks[pos].externalAssets -= shock;
-            else if(shockedBank.capital>0)
-                banks[pos].interbankAssets -= shock;
-            banks[pos].affected = true;
-            double capitalShock = shockedBank.capital - shock;
-            banks[pos].capital = max(shockedBank.capital - shock, 0);
-            banks[pos].Loss = shockedBank.Loss + shock;
-            totalLoss += shockedBank.Loss;
-            banks[pos].visits = shockedBank.visits + 1;
-            if (capitalShock < 0) {
-                banks[pos].defaults = true;
-                failures += 1;
-                if(shockedBank.capital>0) {
-                    double interbankLiabShock = shockedBank.interbankBorrowing + capitalShock;
-                    banks[pos].interbankBorrowing = max(interbankLiabShock, 0);
-                    if (interbankLiabShock < 0) {
-                        banks[pos].customerDeposits = max(interbankLiabShock + shockedBank.customerDeposits, 0);
-                    }
-                }
-                if (generatePlots) writeNetworkData();
-                std::vector<int> expVec = getExposureVector(prunedAdjacencyMatrix[pos], pos);
-                int k = (int) expVec.size();
-                double toTransmit = min(shock - shockedBank.capital, shockedBank.interbankBorrowing);
-                if (k > 0) {
-                            foreach (int expPos, expVec) {
-                                    simulateShock(expPos, pos, toTransmit / k, false);
-                                }
-                }
-            } else if (generatePlots)
-                writeNetworkData();
+    if (isInitial)
+        banks[pos].externalAssets -= shock;
+    else if (shockedBank.capital > 0)
+        banks[pos].interbankAssets -= shock;
+    banks[pos].affected = true;
+    double capitalShock = shockedBank.capital - shock;
+    banks[pos].capital = max(shockedBank.capital - shock, 0);
+    banks[pos].Loss = shockedBank.Loss + shock;
+    totalLoss += shockedBank.Loss;
+    banks[pos].visits = shockedBank.visits + 1;
+    if (capitalShock < 0) {
+        banks[pos].defaults = true;
+        failures += 1;
+        if (shockedBank.capital > 0) {
+            double interbankLiabShock = shockedBank.interbankBorrowing + capitalShock;
+            banks[pos].interbankBorrowing = max(interbankLiabShock, 0);
+            if (interbankLiabShock < 0) {
+                banks[pos].customerDeposits = max(interbankLiabShock + shockedBank.customerDeposits, 0);
+            }
+        }
+        if (generatePlots) writeNetworkData();
+        std::vector<int> expVec = getExposureVector(prunedAdjacencyMatrix[pos], pos);
+        int k = (int) expVec.size();
+        double toTransmit = min(shock - shockedBank.capital, shockedBank.interbankBorrowing);
+        if (toTransmit > 0 && k>0) {
+                        foreach (int expPos, expVec) {
+                                simulateShock(expPos, toTransmit / k, false);
+                        }
         }
     }
 }
@@ -160,7 +151,7 @@ void Network::writeMetaData(double initialShock) {
     std::ofstream myfile;
     myfile.open("csvfiles/metaData.csv");
     myfile << "index,shock\n";
-    myfile << index << COMMA << initialShock<<"\n";
+    myfile << index << COMMA << initialShock << "\n";
     myfile.close();
 }
 

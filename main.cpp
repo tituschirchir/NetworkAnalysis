@@ -21,8 +21,6 @@ int main(int argc, char *argv[]) {
     char *type = argv[1];
     double prob, gamma, theta, assets, failFactor;
     int N, M = 0;
-    /* Do your stuff here */
-
     if (strcmp(type, "Analysis") == 0) {
         prob = atof(argv[2]);
         gamma = atof(argv[3]);
@@ -52,7 +50,7 @@ void writeAdjacencyMatrix(unsigned long N, double prob, double assets, double ga
     writeAdjMat(network, N);
     network.writeNetworkData();
     Bank b = network.getBanks()[0];
-    network.simulateShock(0, 0, b.externalAssets * failFactor,true);
+    network.simulateShock(0, b.externalAssets * failFactor, true);
     std::cout << "Shock: " << b.externalAssets * failFactor << "; Dead: " << network.getFailures() << std::endl;
     network.writeMetaData(b.externalAssets * failFactor);
 }
@@ -76,7 +74,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                 fails = 0;
                 for (int j = 0; j < M; j++) {
                     Network network(N, prob, assets, theta, gamma, false);
-                    network.simulateShock(0, 0, network.getBanks()[0].externalAssets * failFactor, true);
+                    network.simulateShock(0, network.getBanks()[0].externalAssets * failFactor, true);
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
@@ -92,7 +90,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                 fails = 0;
                 for (int j = 0; j < M; j++) {
                     Network network(N, prob, assets, theta, gamma, false);
-                    network.simulateShock(0, 0, network.getBanks()[0].externalAssets * failFactor, true);
+                    network.simulateShock(0, network.getBanks()[0].externalAssets * failFactor, true);
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
@@ -101,7 +99,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
             break;
         }
         case 'P': {
-            double dprob = 1.0 / iterations;
+            double dprob = 0.5 / iterations;
             for (int i = iterations; i--;) {
                 prob = dprob * i;
                 sum = 0.0;
@@ -109,11 +107,11 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                 for (int j = M; j--;) {
                     Network network(N, prob, assets, theta, gamma, false);
                     double asset = network.getBanks()[0].externalAssets;
-                    network.simulateShock(0, 0, asset * failFactor, true);
+                    network.simulateShock(0, asset * failFactor, true);
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
-                myfile << gamma << "," << sum / M << "\n";
+                myfile << prob << "," << sum / M << "\n";
             }
             break;
         }
@@ -124,7 +122,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                 for (int j = 0; j < M; j++) {
                     Network network(i, prob, assets, theta, gamma, false);
                     Bank b = network.getBanks()[0];
-                    network.simulateShock(0, 0, b.externalAssets * failFactor, true);
+                    network.simulateShock(0, b.externalAssets * failFactor, true);
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
