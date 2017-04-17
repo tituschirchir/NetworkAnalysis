@@ -1,5 +1,5 @@
 # Network Analysis
-The algorithms presented in this project is initially intended for analysing contagion effect within a financial system. The following is the procedure for the construction of a networ:
+The algorithms presented in this project were initially intended for analysing contagion effect within a financial system. The following is the procedure for the construction of a networ:
     
 1. **Initialize a matrix representing the interbank relationships**: To be able to propagate contagion through the system, we would need to know whether bank A is exposed to bank B and so forth. The matrix creation utilizes an Erdos Renyi probability-type graph whereby the exposure between two banks is dependent on a given probability, p. The higher the probability, the more likely that the banks are coupled.
 2. **Construct a system of N banks**: A bank is represented by a balance sheet containing 
