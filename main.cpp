@@ -96,7 +96,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
-                myfile << gamma << "," << sum / M << "\n";
+                myfile << gamma << "," << sum / M << "," << fails / M << "\n";
             }
             break;
         }
@@ -113,7 +113,7 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
                     sum += network.getNetLoss();
                     fails += network.getFailures();
                 }
-                myfile << prob << "," << sum / M << "\n";
+                myfile << prob << "," << sum / M << "," << fails / M << "\n";
             }
             break;
         }

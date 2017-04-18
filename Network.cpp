@@ -107,6 +107,7 @@ void Network::simulateShock(int pos, double shock, bool isInitial) {
                         }
         }
     }
+    else if (generatePlots) writeNetworkData();
 }
 
 
