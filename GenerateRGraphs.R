@@ -1,6 +1,9 @@
 #Set working directory to this file location
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
+CompileCCode<-function()
+{
+  system("./CompileCCode.sh")
+}
 library(igraph) # Load the igraph package
 loadAndPlot <- function(type, M, xlab=type, isLossPlot=T, p=0.2, gamma=0.05, theta=0.2, assets=1000, failFactor=0.75, N=25) {
   params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
@@ -91,11 +94,12 @@ updateGraph <- function(bankNetwork, pointsD, maxS) {
        )
   bankNetwork
 }
-
+#Compile C++ Code (in case of any changes) ----
+CompileCCode()
 #Test ----
-dosimulate(N=10,p=.5)
+dosimulate(N=40,p=.6)
 
 #loadAndPlot(type = "P", M = 10000, isLossPlot = F)
-#loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
-#loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
+loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
+loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
 #loadAndPlot(type = "N", xlab = "No. of Banks", M = 1000, isLossPlot = F)
