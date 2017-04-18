@@ -1,3 +1,6 @@
+#Set working directory to this file location
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
 library(igraph) # Load the igraph package
 loadAndPlot <- function(type, M, xlab=type, isLossPlot=T, p=0.2, gamma=0.05, theta=0.2, assets=1000, failFactor=0.75, N=25) {
   params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
@@ -41,11 +44,11 @@ dosimulate<-function(N=5, p=0.2)
 {
   params <- paste("./GenerateData.sh", "Graph", p, 0.03, 0.3, 100000, 1, N)
   system(params)
-  adjMat <- as.matrix(read.csv("~/Documents/Spring2017/Systemic Risk/Research/C++/csvfiles/adjMat.csv"))
-  metadata <- as.matrix(read.csv("~/Documents/Spring2017/Systemic Risk/Research/C++/csvfiles/metaData.csv"))
+  adjMat <- as.matrix(read.csv("csvfiles/adjMat.csv"))
+  metadata <- as.matrix(read.csv("csvfiles/metaData.csv"))
   gg<-graph_from_adjacency_matrix(adjMat, mode="directed")
   for(i in 0:(as.numeric(metadata[1,"index"])-1)){
-    pointsD <-  as.matrix(read.csv(paste0("~/Documents/Spring2017/Systemic Risk/Research/C++/csvfiles/bankData",i,".csv")))
+    pointsD <-  as.matrix(read.csv(paste0("csvfiles/bankData",i,".csv")))
     if(i==0)
       maxS = 10/max(as.numeric(pointsD[,"c"]))
     gg<-updateGraph(gg, pointsD, maxS)
@@ -90,7 +93,7 @@ updateGraph <- function(bankNetwork, pointsD, maxS) {
 }
 
 #Test ----
-dosimulate(N=20,p=.5)
+dosimulate(N=10,p=.5)
 
 #loadAndPlot(type = "P", M = 10000, isLossPlot = F)
 #loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)

@@ -6,6 +6,7 @@
 #include "Network.h"
 #include <ctime>
 #include <string.h>
+#include <zconf.h>
 
 void analyseData(unsigned long N, double prob, double assets, double gamma, double theta, double failFactor, char analysisType, int M);
 
@@ -16,6 +17,8 @@ void writeAdjMat(Network network, int N);
 using namespace std;
 
 int main(int argc, char *argv[]) {
+    std::string loc="../NetworkAnalysis/";
+    chdir(loc.c_str());
     srand((unsigned int) time(NULL));
     char *type = argv[1];
     double prob, gamma, theta, assets, failFactor;
