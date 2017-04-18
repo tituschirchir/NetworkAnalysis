@@ -1,5 +1,5 @@
 # Network Analysis
-The algorithms presented in this project is initially intended for analysing contagion effect within a financial system. The following is the procedure for the construction of a networ:
+The algorithms presented in this project were initially intended for analysing contagion effect within a financial system. The following is the procedure for the construction of a network:
     
 1. **Initialize a matrix representing the interbank relationships**: To be able to propagate contagion through the system, we would need to know whether bank A is exposed to bank B and so forth. The matrix creation utilizes an Erdos Renyi probability-type graph whereby the exposure between two banks is dependent on a given probability, p. The higher the probability, the more likely that the banks are coupled.
 2. **Construct a system of N banks**: A bank is represented by a balance sheet containing 
@@ -17,5 +17,5 @@ The algorithms presented in this project is initially intended for analysing con
     * In terms of the impact of the shock on the bank's stakeholders, capital will be eaten away first, followed by a default on interbank loans (up to the residual shock from capital cushion) and finally a failure to reimburse customer deposits (up to the residual shock from interbank loans).
     * if the shock is not absorbed fully by the banks's capital, the shock is transmitted equally to the lending banks and the process begins again.
     * the reverberation ends when it has been fully absorbed by the system or all the linked institutions have defaulted.
-4. **Report the results**: We use **R** to generate graphs simulating the transmission of the shock in the system. In addition, we plot graphs to analyse the impact of toggling the inputs of the system such as *interbank assets to asset ratio*, *capital to asset ratio, gamma*, *Number of Banks, N* and *Interconnectivity (Erdos Renyi Probability), p*
+4. **Report the results**: We use **R** to generate graphs simulating the transmission of the shock in the system. In addition, we plot graphs to analyse the impact of toggling the inputs of the system such as *interbank assets to asset ratio*, *capital to asset ratio, gamma*, *Number of Banks, N* and *Interconnectivity (Erdos Renyi Probability), p*.
     
