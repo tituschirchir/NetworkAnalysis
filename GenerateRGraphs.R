@@ -5,9 +5,9 @@ CompileCCode<-function()
   system("./CompileCCode.sh")
 }
 library(igraph) # Load the igraph package
-loadAndPlot <- function(type, M, xlab=type, isLossPlot=T, p=0.2, gamma=0.05, theta=0.2, assets=1000, failFactor=0.75, N=25) {
-  params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
-  system(params)
+loadAndPlot <- function(type, M=100, xlab=type, isLossPlot=T, p=0.2, gamma=0.05, theta=0.2, assets=1000, failFactor=0.75, N=25) {
+  #params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
+  #system(params)
   example <- read.csv(paste0("mcfiles/mcSimulation",type,".csv"))
   x<-example$Value
   if(isLossPlot){
@@ -43,9 +43,9 @@ PlotSpecific <- function(type, xlab) {
 }
 
 #Graph Simulation -----
-dosimulate<-function(N=5, p=0.2)
+dosimulate<-function(N=5, p=0.2, theta=0.3, gamma=0.03)
 {
-  params <- paste("./GenerateData.sh", "Graph", p, 0.03, 0.3, 100000, 1, N)
+  params <- paste("./GenerateData.sh", "Graph", p, gamma, theta, 100000, 1, N)
   system(params)
   adjMat <- as.matrix(read.csv("csvfiles/adjMat.csv"))
   metadata <- as.matrix(read.csv("csvfiles/metaData.csv"))
@@ -94,6 +94,10 @@ updateGraph <- function(bankNetwork, pointsD, maxS) {
        )
   bankNetwork
 }
+functionG<-function(x)
+{
+  1672850*x^2 + 1203.185*x + 0.580153
+}
 #Compile C++ Code (in case of any changes) ----
 CompileCCode()
 #Test ----
@@ -103,3 +107,6 @@ dosimulate(N=40,p=.6)
 loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
 loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
 #loadAndPlot(type = "N", xlab = "No. of Banks", M = 1000, isLossPlot = F)
+
+nlm()
+
