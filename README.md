@@ -19,7 +19,7 @@ The algorithms presented in this project were initially intended for analysing c
     * the reverberation ends when it has been fully absorbed by the system or all the linked institutions have defaulted.
 4. **Report the results**: We use **R** to generate graphs simulating the transmission of the shock in the system. In addition, we plot graphs to analyse the impact of toggling the inputs of the system such as *interbank assets to asset ratio*, *capital to asset ratio, gamma*, *Number of Banks, N* and *Interconnectivity (Erdos Renyi Probability), p*.
 
-## Example: Shock Reverberation in a 5-Bank Network (p=50%, gamma=0.05%, theta=0.2%)
+#### Example: Shock Reverberation in a 5-Bank Network (p=50%, gamma=0.05%, theta=0.2%)
 
 <img src="https://cloud.githubusercontent.com/assets/7333584/25133616/2c9197b4-241b-11e7-9af8-5ed80699c33d.png" alt="Network Before Shock" style="width: 300px;"/>
 <img src="https://cloud.githubusercontent.com/assets/7333584/25133627/38c6eb1a-241b-11e7-86c9-803de62f1d72.png" alt="Shock Stage 1" style="width: 300px;"/>
