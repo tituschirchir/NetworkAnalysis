@@ -5,9 +5,21 @@ CompileCCode<-function()
   system("./CompileCCode.sh")
 }
 library(igraph) # Load the igraph package
-loadAndPlot <- function(type, M=100, xlab=type, isLossPlot=T, p=0.2, gamma=0.05, theta=0.2, assets=1000, failFactor=0.75, N=25) {
-  #params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
-  #system(params)
+LoadData <-
+  function(type,
+           M = 100,
+           xlab = type,
+           p = 0.2,
+           gamma = 0.05,
+           theta = 0.2,
+           assets = 1000,
+           failFactor = 0.75,
+           N = 25) {
+    cat("Prob=",p)
+  params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
+  system(params)
+}
+PlotMC <- function(type, xlab=type, isLossPlot=F) {
   example <- read.csv(paste0("mcfiles/mcSimulation",type,".csv"))
   x<-example$Value
   if(isLossPlot){
@@ -43,10 +55,14 @@ PlotSpecific <- function(type, xlab) {
 }
 
 #Graph Simulation -----
-dosimulate<-function(N=5, p=0.2, theta=0.3, gamma=0.03)
+
+GenerateSimulationData<-function(N=5, p=0.2, theta=0.3, gamma=0.03, assets=10000)
 {
-  params <- paste("./GenerateData.sh", "Graph", p, gamma, theta, 100000, 1, N)
+  params <- paste("./GenerateData.sh", "Graph", p, gamma, theta, assets, 1, N)
   system(params)
+}
+dosimulate<-function()
+{
   adjMat <- as.matrix(read.csv("csvfiles/adjMat.csv"))
   metadata <- as.matrix(read.csv("csvfiles/metaData.csv"))
   gg<-graph_from_adjacency_matrix(adjMat, mode="directed")
@@ -55,7 +71,7 @@ dosimulate<-function(N=5, p=0.2, theta=0.3, gamma=0.03)
     if(i==0)
       maxS = 10/max(as.numeric(pointsD[,"c"]))
     gg<-updateGraph(gg, pointsD, maxS)
-    Sys.sleep(.7)
+    Sys.sleep(0)
   }
 }
 updateGraph <- function(bankNetwork, pointsD, maxS) {
@@ -101,12 +117,9 @@ functionG<-function(x)
 #Compile C++ Code (in case of any changes) ----
 CompileCCode()
 #Test ----
-dosimulate(N=40,p=.6)
+#dosimulate(N=40,p=.6)
 
 #loadAndPlot(type = "P", M = 10000, isLossPlot = F)
-loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
-loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
+#loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
+#loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
 #loadAndPlot(type = "N", xlab = "No. of Banks", M = 1000, isLossPlot = F)
-
-nlm()
-
