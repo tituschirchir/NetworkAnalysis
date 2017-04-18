@@ -7,8 +7,7 @@
 #include <ctime>
 #include <string.h>
 
-void
-analyseData(unsigned long N, double prob, double assets, double gamma, double theta, double failFactor, char analysisType, int M);
+void analyseData(unsigned long N, double prob, double assets, double gamma, double theta, double failFactor, char analysisType, int M);
 
 void writeAdjacencyMatrix(unsigned long N, double prob, double assets, double gamma, double theta, double failFactor);
 
