@@ -22,7 +22,7 @@ The algorithms presented in this project were initially intended for analysing c
 
 #### Example: Shock Reverberation in a 5-Bank Network (p=50%, gamma=5%, theta=20%)
 
-<img src="https://cloud.githubusercontent.com/assets/7333584/25133616/2c9197b4-241b-11e7-9af8-5ed80699c33d.png" alt="Network Before Shock" style="width: 300px;"/>
-<img src="https://cloud.githubusercontent.com/assets/7333584/25133627/38c6eb1a-241b-11e7-86c9-803de62f1d72.png" alt="Shock Stage 1" style="width: 300px;"/>
-<img src="https://cloud.githubusercontent.com/assets/7333584/25133642/412a8e88-241b-11e7-946a-d7cc8dc7f305.png" alt="Shock Stage 2" style="width: 300px;"/>
-<img src="https://cloud.githubusercontent.com/assets/7333584/25133651/496a3df0-241b-11e7-90a4-0be50d2ea567.png" alt="Final Stage of Schock" style="width: 300px;"/>
+<img src="https://cloud.githubusercontent.com/assets/7333584/25133616/2c9197b4-241b-11e7-9af8-5ed80699c33d.png" alt="Network Before Shock" width=300 height=300/>
+<img src="https://cloud.githubusercontent.com/assets/7333584/25133627/38c6eb1a-241b-11e7-86c9-803de62f1d72.png" alt="Shock Stage 1"  width=300 height=300/>
+<img src="https://cloud.githubusercontent.com/assets/7333584/25133642/412a8e88-241b-11e7-946a-d7cc8dc7f305.png" alt="Shock Stage 2"  width=300 height=300/>
+<img src="https://cloud.githubusercontent.com/assets/7333584/25133651/496a3df0-241b-11e7-90a4-0be50d2ea567.png" alt="Final Stage of Schock"  width=300 height=300/>
