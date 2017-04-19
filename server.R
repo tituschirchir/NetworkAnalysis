@@ -1,5 +1,6 @@
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(shiny)
+library(ggplot2)
 source("GenerateRGraphs.R")
 # Define server logic required to draw a histogram
 function(input, output) {
@@ -50,11 +51,16 @@ function(input, output) {
 
   output$plot3 <- renderPlot({
     reRunSimulation2()
-    simulateforbanki(ifelse(input$snapshot>GetIterations(),GetIterations(),input$snapshot))
+    simulateforbanki(input$snapshot%%GetIterations())
   }, width = 750, height=800)
   
-  output$text1 <- renderText({ 
-    vlues<-paste(GetIterations()," Iterations.")
-    vlues
-  })
+  output$downloadData <- downloadHandler(
+    filename = function() { paste('simulation_',input$snapshot%%GetIterations(), sep='') },
+    content = function(file) {
+      png(file="simulations.png")
+      simulateforbanki(input$snapshot%%GetIterations())
+      dev.off()
+      file.copy("simulations.png", file, overwrite=TRUE)    
+      }
+  )
 }

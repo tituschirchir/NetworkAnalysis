@@ -1,7 +1,9 @@
 #Set working directory to this file location
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 CompileCCode<-function()
 {
+  #system("chmod +x * -R")
+  system("chmod +x GenerateData.sh")
   system("./CompileCCode.sh")
 }
 library(igraph) # Load the igraph package
@@ -90,6 +92,7 @@ simulateforbanki <- function(i) {
   pointsD <- as.matrix(read.csv(paste0("csvfiles/bankData", i, ".csv")))
   maxS = 10 / max(as.numeric(pointsD[, "c"]))
   updateGraph(gg, pointsD, maxS)
+  gg
 }
 updateGraph <- function(bankNetwork, pointsD, maxS) {
   V(bankNetwork)$e <- as.numeric(pointsD[,"e"])
