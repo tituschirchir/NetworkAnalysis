@@ -55,29 +55,28 @@ dashboardPage(
             max = 1,
             value = 0.2,
             step = 0.01
-          ),
-          sliderInput(
-            "simulations",
-            "MC Runs",
-            min = 0,
-            max = 1000,
-            value = 1,
-            step = 100
-          ),
-          radioButtons(
-            "variable",
-            label = h3("Input to Vary"),
-            choices = list(
-              "Interconnectedness" = "P",
-              "Capitalization" = "G",
-              "Interbank Asset to Asset Ratio" = "T",
-              "No. of Banks" = "N"
-            ),
-            selected = "P"
-          ),
-          actionButton("update", "Run MC Simulation", class="action-button2"), width=3
-        ),
+          ) , width=3),
         box(plotOutput("plot",width = 100)),
+        box(radioButtons(
+          "variable",
+          label = strong("Variable"),
+          choices = list(
+            "Capitalization" = "G",
+            "Interconnectedness" = "P",
+            "Interbank Asset to Asset Ratio" = "T",
+            "No. of Banks" = "N"
+          ),
+          selected = "N"
+        ),
+        sliderInput(
+          "simulations",
+          "MC Runs",
+          min = 0,
+          max = 1000,
+          value = 100,
+          step = 10
+        ),
+        actionButton("update", "Run MC Simulation", class="action-button2"), width=3),
         box(plotOutput("plot2",width = 100))
       )
     ),
@@ -120,11 +119,11 @@ dashboardPage(
             value = 0.2,
             step = 0.01
           ),
-          actionButton("update2", "Run Simulation", class="action-button2"),  
-          downloadButton('downloadData', 'Download Graph', class="download-button"), width = 3
+          actionButton("update2", "Run Simulation", class="action-button2"), width = 3
         ),
         box(numericInput("snapshot", label="Snapshot", value = 0, min = 0, max=100, width = 100),
-            plotOutput("plot3", width = 100, height=800)
+            plotOutput("plot3", width = 100, height=800),  
+            downloadButton('downloadData', 'Download Graph', class="download-button")
         )
         )
       
