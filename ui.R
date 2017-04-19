@@ -1,4 +1,6 @@
 library(shinydashboard)
+source("GenerateRGraphs.R")
+library(shiny)
 
 dashboardPage(
   dashboardHeader(title = "Contagion Analysis"),
@@ -6,9 +8,9 @@ dashboardPage(
     menuItem(
       "Graph Analysis",
       tabName = "graph",
-      icon = icon("dashboard")
+      icon = icon("signal")
     ),
-    menuItem("Network Analysis", tabName = "network", icon = icon("th"))
+    menuItem("Contagion Simulation", tabName = "network", icon = icon("book"))
   )),
   dashboardBody(tabItems(
     # First tab content
@@ -113,10 +115,12 @@ dashboardPage(
             value = 0.2,
             step = 0.01
           ),
-          actionButton("update2", "Run Simulation"), width=2
+          numericInput("snapshot", label="Snapshot", value = 0, min = 0, max=100),
+          actionButton("update2", "Run Simulation"), width = 3
         ),
         box(plotOutput("plot3", width = 100, height=800))
       )
+      
     )
   )
   )

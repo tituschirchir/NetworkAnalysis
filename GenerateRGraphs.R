@@ -5,8 +5,7 @@ CompileCCode<-function()
   system("./CompileCCode.sh")
 }
 library(igraph) # Load the igraph package
-LoadData <-
-  function(type,
+LoadData <- function(type,
            M = 100,
            xlab = type,
            p = 0.2,
@@ -22,6 +21,7 @@ LoadData <-
 PlotMC <- function(type, xlab=type, isLossPlot=F) {
   example <- read.csv(paste0("mcfiles/mcSimulation",type,".csv"))
   x<-example$Value
+  xlabels<-c("G"=expression(gamma), "T"=expression(theta), "P"="Interconnectedness", "N"="No. Of Banks" )
   if(isLossPlot){
     y<- example$Loss
     ylab <- "Value Lost"
@@ -29,13 +29,16 @@ PlotMC <- function(type, xlab=type, isLossPlot=F) {
     y<- example$Defaults
     ylab<-"No. of Defaults"
   }
+  xlab <- xlabels[type]
+  titles<-paste("Impact of",xlab, "on",ylab)
   plot(
     x,
     y,
     col = 'blue',
     xlab = xlab,
     ylab = ylab,
-    cex=0.3
+    cex=0.3,
+    main = titles
   )
   lines(smooth.spline(x, y), col='red')
 }
@@ -66,13 +69,27 @@ dosimulate<-function()
   adjMat <- as.matrix(read.csv("csvfiles/adjMat.csv"))
   metadata <- as.matrix(read.csv("csvfiles/metaData.csv"))
   gg<-graph_from_adjacency_matrix(adjMat, mode="directed")
-  for(i in 0:(as.numeric(metadata[1,"index"])-1)){
+  for(i in 0:GetIterations()){
     pointsD <-  as.matrix(read.csv(paste0("csvfiles/bankData",i,".csv")))
     if(i==0)
       maxS = 10/max(as.numeric(pointsD[,"c"]))
     gg<-updateGraph(gg, pointsD, maxS)
     Sys.sleep(0)
   }
+}
+GetIterations<-function()
+{
+  metadata<-as.matrix(read.csv("csvfiles/metaData.csv"))
+  as.numeric(metadata[1,"index"])-1
+}
+
+simulateforbanki <- function(i) {
+  adjMat <- as.matrix(read.csv("csvfiles/adjMat.csv"))
+  metadata <- as.matrix(read.csv("csvfiles/metaData.csv"))
+  gg<-graph_from_adjacency_matrix(adjMat, mode="directed")
+  pointsD <- as.matrix(read.csv(paste0("csvfiles/bankData", i, ".csv")))
+  maxS = 10 / max(as.numeric(pointsD[, "c"]))
+  updateGraph(gg, pointsD, maxS)
 }
 updateGraph <- function(bankNetwork, pointsD, maxS) {
   V(bankNetwork)$e <- as.numeric(pointsD[,"e"])
@@ -110,16 +127,5 @@ updateGraph <- function(bankNetwork, pointsD, maxS) {
        )
   bankNetwork
 }
-functionG<-function(x)
-{
-  1672850*x^2 + 1203.185*x + 0.580153
-}
-#Compile C++ Code (in case of any changes) ----
-CompileCCode()
-#Test ----
-#dosimulate(N=40,p=.6)
 
-#loadAndPlot(type = "P", M = 10000, isLossPlot = F)
-#loadAndPlot(type = "T", xlab=expression(theta),M = 100, isLossPlot = F)
-#loadAndPlot(type = "G", xlab= expression(gamma), M = 100, isLossPlot = F)
-#loadAndPlot(type = "N", xlab = "No. of Banks", M = 1000, isLossPlot = F)
+CompileCCode()

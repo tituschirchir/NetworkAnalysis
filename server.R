@@ -30,10 +30,10 @@ function(input, output) {
           N = input$N2,
           p = input$prob2,
           theta = input$theta2,
-          gamma = input$gamma2, 
+          gamma = input$gamma2,
           assets = input$assets2
         )
-    })
+      })
   })
   output$plot <- renderPlot({
     reRunSimulation()
@@ -45,12 +45,16 @@ function(input, output) {
   output$plot2 <- renderPlot({
     reRunSimulation()
     PlotMC(input$variable,
-           xlab = expression(gamma),
            isLossPlot = T)
   }, height = 400, width = 600)
 
   output$plot3 <- renderPlot({
-    reRunSimulation2()  
-    dosimulate()
+    reRunSimulation2()
+    simulateforbanki(ifelse(input$snapshot>GetIterations(),GetIterations(),input$snapshot))
   }, width = 750, height=800)
+  
+  output$text1 <- renderText({ 
+    vlues<-paste(GetIterations()," Iterations.")
+    vlues
+  })
 }
