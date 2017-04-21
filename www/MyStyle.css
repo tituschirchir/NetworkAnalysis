@@ -4,6 +4,19 @@
   border-color: #2e6da4;
 }
 .download-button{
-  background-color: #b72e42;
-  color: white;
+    background-color: #b72e42;
+    color: white;
+    margin-left: 0;
+    position: absolute;
+    transition: .5s ease;
+    top: 0%;
+    right: 0%;
+}
+.plotbox{
+    color: #337ab7;
+    background-color: #337ab7;
+}
+.box-body-custom{
+    border-radius: 0 0 3px 3px;
+    padding: 10px;
 }

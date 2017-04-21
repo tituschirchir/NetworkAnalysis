@@ -1,7 +1,7 @@
 library(shinydashboard)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("GenerateRGraphs.R")
 library(shiny)
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 dashboardPage(
   dashboardHeader(title = "Contagion Analysis"),
@@ -15,7 +15,8 @@ dashboardPage(
   )),
   dashboardBody(
     tags$head(
-      tags$link(rel = "stylesheet", type = "text/css", href = "MyStyle.css")
+      tags$link(rel = "stylesheet", type = "text/css", href = "MyStyle.css"),
+      tags$link(rel="shortcut icon", href="/www/favicon.ico")
     ),
     tabItems(
     # First tab content
@@ -56,7 +57,7 @@ dashboardPage(
             value = 0.2,
             step = 0.01
           ) , width=3),
-        box(plotOutput("plot",width = 100)),
+        box(plotOutput("plot",width = 100), class="plotbox"),
         box(radioButtons(
           "variable",
           label = strong("Variable"),
@@ -77,7 +78,7 @@ dashboardPage(
           step = 10
         ),
         actionButton("update", "Run MC Simulation", class="action-button2"), width=3),
-        box(plotOutput("plot2",width = 100))
+        box(plotOutput("plot2",width = 100), class="plotbox")
       )
     ),
     
@@ -121,9 +122,9 @@ dashboardPage(
           ),
           actionButton("update2", "Run Simulation", class="action-button2"), width = 3
         ),
-        box(numericInput("snapshot", label="Snapshot", value = 0, min = 0, max=100, width = 100),
-            plotOutput("plot3", width = 100, height=800),  
-            downloadButton('downloadData', 'Download Graph', class="download-button")
+        box(numericInput("snapshot", label="Snapshot", value = 0, min = 0, max=100, width = 60),
+            plotOutput("plot3", width = 100, height=800), 
+            downloadButton('downloadData', 'Download Graph', class="download-button"), class="box-body-custom"
         )
         )
       
