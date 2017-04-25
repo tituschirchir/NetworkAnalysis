@@ -3,9 +3,12 @@
 CompileCCode<-function()
 {
   #system("chmod +x * -R")
-  system("chmod +x GenerateData.sh")
+  # system("chmod +x GenerateData.sh")
+  # system("chmod -R +x .")
+  # system("chmod +x CompileCCode.sh")
   system("./CompileCCode.sh")
 }
+CompileCCode()
 library(igraph) # Load the igraph package
 LoadData <- function(type,
            M = 100,
@@ -20,16 +23,21 @@ LoadData <- function(type,
   params <- paste("./GenerateData.sh", "Analysis", p, gamma, theta, assets, failFactor, N, type, M)
   system(params)
 }
-PlotMC <- function(type, xlab=type, isLossPlot=F) {
+PlotMC <- function(type, xlab=type, plotType='L') {
   example <- read.csv(paste0("mcfiles/mcSimulation",type,".csv"))
   x<-example$Value
   xlabels<-c("G"=expression(gamma), "T"=expression(theta), "P"="Interconnectedness", "N"="No. Of Banks" )
-  if(isLossPlot){
-    y<- example$Loss
-    ylab <- "Value Lost"
-  } else{
-    y<- example$Defaults
-    ylab<-"No. of Defaults"
+  if(plotType=='L'){
+    y<- example$MarketLoss
+    ylab <- "Loss to External Parties"
+  } else if(plotType=='E'){
+    y<- example$Entropy
+    ylab<-"Entropy"
+  }
+  else
+  {
+    y<- example$Default
+    ylab<-"No of Defaults"
   }
   xlab <- xlabels[type]
   titles<-paste("Impact of",xlab, "on",ylab)
@@ -130,5 +138,5 @@ updateGraph <- function(bankNetwork, pointsD, maxS) {
        )
   bankNetwork
 }
-
-CompileCCode()
+#LoadData(type="G")
+#PlotMC(type = "G")

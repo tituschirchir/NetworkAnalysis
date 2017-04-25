@@ -1,4 +1,4 @@
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(shiny)
 library(ggplot2)
 source("GenerateRGraphs.R")
@@ -40,15 +40,21 @@ function(input, output) {
     reRunSimulation()
     PlotMC(input$variable,
            xlab = expression(gamma),
-           isLossPlot = F)
+           plotType = 'D')
   }, height = 400, width = 600)
 
   output$plot2 <- renderPlot({
     reRunSimulation()
     PlotMC(input$variable,
-           isLossPlot = T)
+           plotType = 'L')
   }, height = 400, width = 600)
-
+  
+  output$entropyPlot <- renderPlot({
+    reRunSimulation()
+    PlotMC(input$variable,
+           plotType = 'E')
+  }, height = 400, width = 600)
+  
   output$plot3 <- renderPlot({
     reRunSimulation2()
     simulateforbanki(input$snapshot%%GetIterations())

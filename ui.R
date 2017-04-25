@@ -1,5 +1,5 @@
 library(shinydashboard)
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("GenerateRGraphs.R")
 library(shiny)
 
@@ -24,7 +24,7 @@ dashboardPage(
       tabName = "graph",
       fluidRow(
         box(
-          numericInput("assets", label = "Total Value of Assets", value = 10000),
+          numericInput("assets", label = "Total Value of Assets", value = 100000),
           sliderInput(
             "N",
             "No. Of Banks",
@@ -46,7 +46,7 @@ dashboardPage(
             "Capitalization",
             min = 0,
             max = 0.2,
-            value = 0.03,
+            value = 0.05,
             step = 0.01
           ),
           sliderInput(
@@ -56,29 +56,31 @@ dashboardPage(
             max = 1,
             value = 0.2,
             step = 0.01
-          ) , width=3),
-        box(plotOutput("plot",width = 100), class="plotbox"),
-        box(radioButtons(
-          "variable",
-          label = strong("Variable"),
-          choices = list(
-            "Capitalization" = "G",
-            "Interconnectedness" = "P",
-            "Interbank Asset to Asset Ratio" = "T",
-            "No. of Banks" = "N"
+          ), radioButtons(
+            "variable",
+            label = strong("Variable"),
+            choices = list(
+              "Capitalization" = "G",
+              "Interconnectedness" = "P",
+              "Interbank Asset to Asset Ratio" = "T",
+              "No. of Banks" = "N"
+            ),
+            selected = "N"
+          ), 
+          sliderInput(
+            "simulations",
+            "MC Runs",
+            min = 0,
+            max = 1000,
+            value = 100,
+            step = 10
           ),
-          selected = "N"
-        ),
-        sliderInput(
-          "simulations",
-          "MC Runs",
-          min = 0,
-          max = 1000,
-          value = 100,
-          step = 10
-        ),
-        actionButton("update", "Run MC Simulation", class="action-button2"), width=3),
-        box(plotOutput("plot2",width = 100), class="plotbox")
+          actionButton("update", "Run MC Simulation", class="action-button2"), width=3),
+        fluidRow(
+        box(plotOutput("plot",width = 75), class="plotbox"),
+        box(plotOutput("plot2",width = 75), class="plotbox"),
+        box(plotOutput("entropyPlot",width = 75), class="plotbox")
+        )
       )
     ),
     

@@ -16,7 +16,8 @@ static const char *const COMMA = ",";
 class Network {
     int failures = 0, index=0;
     unsigned long N;
-    double p, totalLoss = 0;
+    double p, marketLoss = 0.0;
+    double entropy=0;
     int links = 0;
     bool generatePlots = false;
     std::vector<std::vector<int>> inverseAdjacencyMatrix, prunedAdjacencyMatrix;
@@ -34,8 +35,6 @@ public:
 
     void simulateShock(int pos, double shock, bool isInitial);
 
-    double getNetLoss();
-
     int getFailures();
 
     std::vector<std::vector<int>> getPrunedAdjacencyMatrix();
@@ -45,6 +44,10 @@ public:
     void writeMetaData(double initialShock);
 
     virtual ~Network();
+
+    double getMarketLoss();
+
+    double getEntropy();
 };
 
 

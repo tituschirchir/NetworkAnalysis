@@ -18,7 +18,7 @@ public:
 
 public:
     std::string name;
-    double interbankAssets = 0,interbankBorrowing = 0, externalAssets = 0, capital = 0, customerDeposits = 0, Loss = 0;
+    double interbankAssets = 0,interbankBorrowing = 0, externalAssets = 0, capital = 0, customerDeposits = 0;
     int visits = 0;
     bool defaults, affected = false;
 

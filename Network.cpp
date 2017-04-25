@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <boost/foreach.hpp>
 #include <fstream>
-
+#include <math.h>
 #define foreach         BOOST_FOREACH
 
 Network::Network(unsigned long N, double p, double A, double theta, double gamma, bool generatePlots)
@@ -61,6 +61,8 @@ void Network::initiateNetwork(double A, double theta, double gamma) {
         bank.customerDeposits = bank.externalAssets + bank.interbankAssets - bank.capital - bank.interbankBorrowing;
         banks[i] = bank;
     }
+    if(e_bk>0)
+        entropy += e_bk*links*log(e_bk);
 }
 
 std::vector<Bank> Network::getBanks() {
@@ -77,37 +79,37 @@ static double max(const double a, const double b) {
 
 void Network::simulateShock(int pos, double shock, bool isInitial) {
     Bank shockedBank = banks[pos];
-    if (isInitial)
-        banks[pos].externalAssets -= shock;
-    else if (shockedBank.capital > 0)
-        banks[pos].interbankAssets -= shock;
-    banks[pos].affected = true;
-    double capitalShock = shockedBank.capital - shock;
-    banks[pos].capital = max(shockedBank.capital - shock, 0);
-    banks[pos].Loss = shockedBank.Loss + shock;
-    totalLoss += shockedBank.Loss;
-    banks[pos].visits = shockedBank.visits + 1;
-    if (capitalShock < 0) {
-        banks[pos].defaults = true;
-        failures += 1;
-        if (shockedBank.capital > 0) {
-            double interbankLiabShock = shockedBank.interbankBorrowing + capitalShock;
-            banks[pos].interbankBorrowing = max(interbankLiabShock, 0);
-            if (interbankLiabShock < 0) {
-                banks[pos].customerDeposits = max(interbankLiabShock + shockedBank.customerDeposits, 0);
+    if (shockedBank.defaults) {
+        return;
+    } else {
+        if (isInitial)
+            banks[pos].externalAssets -= shock;
+        else if (shockedBank.capital > 0)
+            banks[pos].interbankAssets -= shock;
+        banks[pos].affected = true;
+        double resCapShock = shock - shockedBank.capital;
+        banks[pos].capital = max(shockedBank.capital-shock, 0);
+        banks[pos].visits = shockedBank.visits + 1;
+        if (resCapShock>0) {
+            banks[pos].defaults = true;
+            failures += 1;
+            double resInterBankShock = resCapShock - shockedBank.interbankBorrowing;
+            banks[pos].interbankBorrowing = max(shockedBank.interbankBorrowing-resCapShock, 0);
+            if (resInterBankShock > 0) {
+                banks[pos].customerDeposits = max(shockedBank.customerDeposits-resInterBankShock, 0);
+                marketLoss += shockedBank.customerDeposits-banks[pos].customerDeposits;
             }
-        }
-        if (generatePlots) writeNetworkData();
-        std::vector<int> expVec = getExposureVector(prunedAdjacencyMatrix[pos], pos);
-        int k = (int) expVec.size();
-        double toTransmit = min(shock - shockedBank.capital, shockedBank.interbankBorrowing);
-        if (toTransmit > 0 && k>0) {
+            if (generatePlots) writeNetworkData();
+            std::vector<int> expVec = getExposureVector(prunedAdjacencyMatrix[pos], pos);
+            int k = (int) expVec.size();
+            double toTransmit = min(resCapShock, shockedBank.interbankBorrowing);
+            if (toTransmit > 0 && k > 0) {
                         foreach (int expPos, expVec) {
                                 simulateShock(expPos, toTransmit / k, false);
-                        }
-        }
+                            }
+            }
+        } else if (generatePlots) writeNetworkData();
     }
-    else if (generatePlots) writeNetworkData();
 }
 
 
@@ -123,10 +125,6 @@ std::vector<int> Network::getExposureVector(std::vector<int> expVec, int pos) {
 
 std::vector<std::vector<int>> Network::getPrunedAdjacencyMatrix() {
     return prunedAdjacencyMatrix;
-}
-
-double Network::getNetLoss() {
-    return totalLoss;
 }
 
 int Network::getFailures() {
@@ -156,4 +154,10 @@ void Network::writeMetaData(double initialShock) {
     myfile.close();
 }
 
+double Network::getMarketLoss() {
+    return marketLoss;
+}
 
+double Network::getEntropy(){
+    return entropy;
+}

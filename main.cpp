@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
 
 void writeAdjacencyMatrix(unsigned long N, double prob, double assets, double gamma, double theta, double failFactor) {
     Network network(N, prob, assets, theta, gamma, true);
+    std::cout<<network.getEntropy()<<std::endl;
     writeAdjMat(network, N);
     network.writeNetworkData();
     Bank b = network.getBanks()[0];
@@ -64,23 +65,25 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
     name.push_back(analysisType);
     name.append(".csv");
     myfile.open(name);
-    myfile << "Value,Loss,Defaults\n";
-    double fails, sum;
+    myfile << "Value,Defaults,MarketLoss,Entropy\n";
+    double fails, marketLoss, entropy;
     int iterations=1000;
     switch (analysisType) {
         case 'T': {
             double dtheta = 0.5 / iterations;
             for (int i = 0; i < iterations; ++i) {
                 theta = dtheta * i;
-                sum = 0;
-                fails = 0;
+                fails = 0.0;
+                entropy=0.0;
+                marketLoss = 0.0;
                 for (int j = 0; j < M; j++) {
                     Network network(N, prob, assets, theta, gamma, false);
                     network.simulateShock(0, network.getBanks()[0].externalAssets * failFactor, true);
-                    sum += network.getNetLoss();
                     fails += network.getFailures();
+                    marketLoss += network.getMarketLoss();
+                    entropy+=network.getEntropy();
                 }
-                myfile << theta << "," << sum / M << "," << fails / M << "\n";
+                myfile << theta << "," << fails / M << "," << marketLoss / M<< "," << entropy / M << "\n";
             }
             break;
         }
@@ -88,15 +91,17 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
             double dgamma = 0.1 / iterations;
             for (int i = 0; i < iterations; ++i) {
                 gamma = dgamma * i;
-                sum = 0;
+                entropy=0;
                 fails = 0;
+                marketLoss = 0.0;
                 for (int j = 0; j < M; j++) {
                     Network network(N, prob, assets, theta, gamma, false);
                     network.simulateShock(0, network.getBanks()[0].externalAssets * failFactor, true);
-                    sum += network.getNetLoss();
                     fails += network.getFailures();
+                    marketLoss+= network.getMarketLoss();
+                    entropy+=network.getEntropy();
                 }
-                myfile << gamma << "," << sum / M << "," << fails / M << "\n";
+                myfile << gamma << "," << fails / M<< "," << marketLoss / M <<"," << entropy / M <<  "\n";
             }
             break;
         }
@@ -104,31 +109,34 @@ void analyseData(unsigned long N, double prob, double assets, double gamma, doub
             double dprob = 0.5 / iterations;
             for (int i = iterations; i--;) {
                 prob = dprob * i;
-                sum = 0.0;
+                entropy=0.0;
                 fails = 0.0;
+                marketLoss = 0.0;
                 for (int j = M; j--;) {
                     Network network(N, prob, assets, theta, gamma, false);
-                    double asset = network.getBanks()[0].externalAssets;
-                    network.simulateShock(0, asset * failFactor, true);
-                    sum += network.getNetLoss();
+                    network.simulateShock(0, network.getBanks()[0].externalAssets * failFactor, true);
                     fails += network.getFailures();
+                    marketLoss+= network.getMarketLoss();
+                    entropy+=network.getEntropy();
                 }
-                myfile << prob << "," << sum / M << "," << fails / M << "\n";
+                myfile << prob << "," << fails / M << "," << marketLoss / M <<"," << entropy / M <<  "\n";
             }
             break;
         }
         default: {
-            for (int i = 1; i < 50; ++i) {
-                sum = 0;
+            for (int i = 1; i <= N; ++i) {
+                entropy=0.0;
                 fails = 0;
+                marketLoss = 0.0;
                 for (int j = 0; j < M; j++) {
                     Network network(i, prob, assets, theta, gamma, false);
                     Bank b = network.getBanks()[0];
                     network.simulateShock(0, b.externalAssets * failFactor, true);
-                    sum += network.getNetLoss();
                     fails += network.getFailures();
+                    marketLoss += network.getMarketLoss();
+                    entropy+=network.getEntropy();
                 }
-                myfile << i << "," << sum / M << "," << fails / M << "\n";
+                myfile << i << "," << fails / M<< "," << marketLoss / M <<"," << entropy / M <<  "\n";
             }
             break;
         }
